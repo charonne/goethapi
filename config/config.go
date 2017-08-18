@@ -11,7 +11,8 @@ var Config = struct {
 	}
 
 	Blockchain struct {
-		Rawurl  string
+		Rawurl        string
+		Keystorepath  string
 	}
 
 	Account struct {
@@ -22,6 +23,5 @@ var Config = struct {
 
 func init() {
   // Config
-  //configor.Load(&Config, "./app.yml")
   configor.Load(&Config, "src/github.com/charonne/goethapi/config/app.yml")
 }

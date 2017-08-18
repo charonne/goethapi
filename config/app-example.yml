@@ -8,7 +8,8 @@ debug: true
 
 # Blockchain settings
 blockchain:
-  rawurl: path_to_blockchain_node
+  rawurl: url_or_raw_to_blockchain_node
+  keystorepath: path_to_blockchain_keystore
 
 # Blockchain account
 account:
