@@ -1,0 +1,16 @@
+# App
+app:
+  name: GoethApi
+
+env: staging
+
+debug: true
+
+# Blockchain settings
+blockchain:
+  rawurl: path_to_blockchain_node
+
+# Blockchain account
+account:
+  key: 'your_json_file_data'
+  passphrase: your_account_passphrase
