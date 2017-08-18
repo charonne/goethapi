@@ -37,7 +37,6 @@ func getClient() (client *ethclient.Client, err error) {
 }
 
 func main() {
-
   fmt.Println(config.Config.App.Name)
 
   // Connect to node
