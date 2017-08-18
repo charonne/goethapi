@@ -5,7 +5,7 @@ import(
   "math/big"
 )
 
-
+// Convert unit to unit
 func Convert(value *big.Int, from string, to string) *big.Float {
   // Choose convertion unit
   switch unit := from; unit {
@@ -17,6 +17,8 @@ func Convert(value *big.Int, from string, to string) *big.Float {
   return new(big.Float).SetInt(value)
 }
 
+
+// Convert wei to unit
 func ConvertWei(value *big.Int, to string) *big.Float {
   // Default coef
   var coef = big.NewInt(1)

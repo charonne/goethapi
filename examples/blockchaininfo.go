@@ -1,3 +1,19 @@
+// Copyright 2017 Charonne https://charonne.com
+// This file is part of the goethapi library.
+//
+// The goethapi library is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// The gethitihteg library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with the gethitihteg library. If not, see <http://www.gnu.org/licenses/>.
+
 package main
 
 import(
@@ -11,9 +27,6 @@ import(
 
     "github.com/charonne/goethapi/config"
     "github.com/charonne/goethapi/converter"
-
-
-    //"math/big"
 )
 
 func getClient() (client *ethclient.Client, err error) {
@@ -26,19 +39,6 @@ func getClient() (client *ethclient.Client, err error) {
 func main() {
 
   fmt.Println(config.Config.App.Name)
-
-  /*
-  value := big.NewInt(8046)
-  converter.Convert(value, "", "")
-  /*
-  var value = big.NewInt(8046000000000)
-  //  value = 8046000000000
-
-  bigint := converter.Convert(value, "", "")
-  fmt.Printf("Convert=== %v\n", bigint)
-  log.Fatalf("Stop")
-  */
-
 
   // Connect to node
   client, err := getClient()
