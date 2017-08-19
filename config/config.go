@@ -17,7 +17,9 @@ var Config = struct {
 	}
 
 	Account struct {
-		Key         string
+    Address     string
+    Keystore    string
+		Json         string
 		Passphrase  string
 	}
 }{}

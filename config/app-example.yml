@@ -2,7 +2,7 @@
 app:
   name: GoethApi
   version: 0.1
-  
+
 env: staging
 
 debug: true
@@ -14,5 +14,7 @@ blockchain:
 
 # Blockchain account
 account:
-  key: 'your_json_file_data'
+  address: your_public_address
+  keystore: your_path_to_account_file
+  json: 'your_json_file_data'
   passphrase: your_account_passphrase

@@ -24,7 +24,6 @@ import(
 
     "github.com/ethereum/go-ethereum/ethclient"
     "github.com/ethereum/go-ethereum/accounts/keystore"
-    "github.com/ethereum/go-ethereum/common"
     "github.com/ethereum/go-ethereum/crypto"
 
     "github.com/charonne/goethapi/config"
@@ -33,8 +32,7 @@ import(
 
 func getClient() (client *ethclient.Client, err error) {
     log.Println("Connect to: " + config.Config.Blockchain.Rawurl)
-    endPoint := "/home/raph/studio/private/geth.ipc"
-    client, err = ethclient.Dial(endPoint)
+    client, err = ethclient.Dial(config.Config.Blockchain.Rawurl)
     return
 }
 
@@ -90,19 +88,19 @@ func getAccounts() {
   keystore_path := config.Config.Blockchain.Keystorepath
   keystoreList := keystore.NewKeyStore(keystore_path, keystore.LightScryptN, keystore.LightScryptP)
   for i, ks := range keystoreList.Accounts() {
-    balance, err := client.BalanceAt(ctx, common.HexToAddress("0x7844cd3b9de632fef079c8dabc7fc946e48e23ef"), nil)
+    balance, err := client.BalanceAt(ctx, ks.Address, nil)
     if err != nil {
       log.Fatalf("could not get balance: %v", err)
     }
     balanceEther := converter.Convert(balance, "wei", "ether")
-    fmt.Printf("%d: %s, balance: %v ether\n", i + 1, ks.Address.String(), balanceEther)
+    fmt.Printf("%d: %s, balance: %v ether,  %v wei\n", i + 1, ks.Address.String(), balanceEther, balance)
   }
 }
 
 // Get private key
 func getPrivateKey() {
   color.Blue("Get private key:")
-  key, err := keystore.DecryptKey([]byte(config.Config.Account.Key), config.Config.Account.Passphrase)
+  key, err := keystore.DecryptKey([]byte(config.Config.Account.Json), config.Config.Account.Passphrase)
   if err != nil {
       log.Fatal("Json key decrypted with bad password")
   }
