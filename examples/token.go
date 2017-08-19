@@ -32,31 +32,38 @@ import (
 func main() {
 	key, _ := crypto.GenerateKey()
 	auth := bind.NewKeyedTransactor(key)
-	fmt.Printf("Auth 1 address: %v\nAuth 1 key: %v\n", auth.From.String(), key)
+  fmt.Printf("Auth 1 address: %v\nAuth 1 key: %v\n", auth.From.String(), key)
 
 	alloc := make(core.GenesisAlloc)
 	alloc[auth.From] = core.GenesisAccount{Balance: big.NewInt(133700000)}
+
+	key2, _ := crypto.GenerateKey()
+	auth2 := bind.NewKeyedTransactor(key2)
+	alloc[auth2.From] = core.GenesisAccount{Balance: big.NewInt(133700000)}
+
 	sim := backends.NewSimulatedBackend(alloc)
 
 	// deploy contract
-	addr, _, contract, err := contracts.DeploySimpleStorage(auth, sim)
+	addr, _, contract, err := contracts.DeployCoinFidToken(auth, sim, big.NewInt(0), "Toto", 0 , "TO", auth.From)
 	if err != nil {
 		log.Fatalf("could not deploy contract: %v", err)
 	}
-	
+
 	// interact with contract
 	fmt.Printf("Contract deployed to: %s\n", addr.String())
 
 	fmt.Println("Mining...")
 	sim.Commit()
 
-  fmt.Println("Adding new value...")
-	tx, err := contract.Set(&bind.TransactOpts{
+  name, err := contract.Name(nil)
+  fmt.Printf("Get Name: %s\n", name)
+
+  tx, err := contract.SetName(&bind.TransactOpts{
 		From:     auth.From,
 		Signer:   auth.Signer,
 		GasLimit: big.NewInt(2381623),
 		Value:    big.NewInt(0),
-	}, big.NewInt(42))
+	}, "Coucou")
   if err != nil {
 		log.Fatalf("could not execute contract: %v", err)
 	}
@@ -65,28 +72,6 @@ func main() {
 	fmt.Println("Mining...")
 	sim.Commit()
 
-	info, _ := contract.Get(nil)
-	fmt.Printf("Get data: %d\n", info)
-
-	fmt.Println("Mining...")
-	sim.Commit()
-
-  // Get contract
-  contract2, err := contracts.NewSimpleStorage(addr, sim)
-	tx, err = contract2.Set(&bind.TransactOpts{
-		From:     auth.From,
-		Signer:   auth.Signer,
-		GasLimit: big.NewInt(2381623),
-		Value:    big.NewInt(0),
-	}, big.NewInt(84))
-  if err != nil {
-		log.Fatalf("could not execute contract: %v", err)
-	}
-  fmt.Printf("Contract executed: %s\n", tx.String())
-
-	fmt.Println("Mining...")
-	sim.Commit()
-
-  data2, _ := contract2.Get(nil)
-  fmt.Printf("Get data 2: %d\n", data2)
+  name2, err := contract.Name(nil)
+  fmt.Printf("Get Name 2: %s\n", name2)
 }

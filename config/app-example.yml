@@ -1,7 +1,8 @@
 # App
 app:
   name: GoethApi
-
+  version: 0.1
+  
 env: staging
 
 debug: true

@@ -8,6 +8,7 @@ import(
 var Config = struct {
 	App struct {
 		Name  string
+		Version  string
 	}
 
 	Blockchain struct {
