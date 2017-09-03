@@ -38,13 +38,13 @@ func main() {
 	alloc[auth.From] = core.GenesisAccount{Balance: big.NewInt(133700000)}
 	sim := backends.NewSimulatedBackend(alloc)
 
-	// deploy contract
+	// Deploy contract
 	addr, _, contract, err := contracts.DeploySimpleStorage(auth, sim)
 	if err != nil {
 		log.Fatalf("could not deploy contract: %v", err)
 	}
-	
-	// interact with contract
+
+	// Interact with contract
 	fmt.Printf("Contract deployed to: %s\n", addr.String())
 
 	fmt.Println("Mining...")

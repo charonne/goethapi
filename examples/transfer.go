@@ -22,7 +22,7 @@ import (
 	"math/big"
   "io/ioutil"
   "context"
-  
+
   "github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/ethereum/go-ethereum/common"
@@ -37,11 +37,12 @@ import (
 func main() {
 	fmt.Printf("%s v%s\n", config.Config.App.Name, config.Config.App.Version)
 
-  endPoint := "/home/raph/studio/private/geth.ipc"
+  endPoint := config.Config.Blockchain.Rawurl
   client, err := ethclient.Dial(endPoint)
   if err != nil {
       log.Fatal(err)
   }
+	log.Println("Connected to: ", config.Config.Blockchain.Rawurl)
   keystoreFile := config.Config.Account.Keystore
   password := config.Config.Account.Passphrase
 
@@ -64,18 +65,21 @@ func main() {
   if err != nil {
     log.Fatal(err)
   }
+	log.Println("Gas price: ", gasPrice)
 
   // Figure out the gas limit
   from := common.HexToAddress(config.Config.Account.Address)
   to := common.HexToAddress("0x56a4683218dcf19d5b62b667c4348e2ac06d174b")
   value := big.NewInt(1000000000000000000) // 1 ether
 
-  input := []byte("KlaatuVerataNicto42")
+  input := []byte(config.Config.Account.Passphrase)
   msg := ethereum.CallMsg{From: from, To: &to, Value: value, Data: input}
   gasLimit, err := client.EstimateGas(ctx, msg)
   if err != nil {
     log.Fatal(err)
   }
+	log.Println("Gas limit: ", gasLimit)
+
 
   // Get nonce
   nonce, err := client.PendingNonceAt(ctx, from)
@@ -84,11 +88,11 @@ func main() {
   }
 
   // Create the transaction
-	tx := types.NewTransaction(nonce, to, value, gasPrice, gasLimit, input)
+	tx := types.NewTransaction(nonce, to, value, gasLimit, gasPrice, input)
 
   // Sign
   transact_opt := bind.NewKeyedTransactor(key.PrivateKey)
-  log.Printf("transact_opt: %T", transact_opt)
+  //log.Printf("transact_opt: %T", transact_opt)
   tx, err = transact_opt.Signer(types.HomesteadSigner{}, common.HexToAddress(config.Config.Account.Address), tx)
   if err != nil {
       log.Fatal(err)
@@ -97,6 +101,6 @@ func main() {
 
   err = client.SendTransaction(ctx, tx)
   if err != nil {
-      log.Fatalf("%v", err)
+      log.Fatalf("Transaction failed: %v", err)
   }
 }

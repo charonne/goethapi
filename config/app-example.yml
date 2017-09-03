@@ -7,6 +7,14 @@ env: staging
 
 debug: true
 
+# Database settings
+database:
+  connection: postgres
+  host: localhost
+  dbname: database_name
+  user: database_login
+  password: database_password
+
 # Blockchain settings
 blockchain:
   rawurl: url_or_raw_to_blockchain_node

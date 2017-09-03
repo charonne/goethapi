@@ -11,6 +11,14 @@ var Config = struct {
 		Version  string
 	}
 
+	Database struct {
+		Connection  string
+		Host        string
+		Dbname      string
+		User        string
+		Password      string
+	}
+
 	Blockchain struct {
 		Rawurl        string
 		Keystorepath  string
