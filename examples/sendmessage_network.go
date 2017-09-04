@@ -22,7 +22,7 @@ import (
 	"time"
 	"math/big"
   "io/ioutil"
-  "context"
+  // "context"
 
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/ethereum/go-ethereum/common"
@@ -43,17 +43,7 @@ func main() {
 	if err != nil {
 			log.Fatal(err)
 	}
-
-	// Get context
-	ctx := context.Background()
-
-	// Figure out the gas price
-	gasPrice, err := client.SuggestGasPrice(ctx)
-	if err != nil {
-		log.Fatal(err)
-	}
-	log.Println("Gas price: ", gasPrice)
-
+	
 	// 	Get transact opt
 	keystoreFile := config.Config.Account.Keystore
   password := config.Config.Account.Passphrase
@@ -69,7 +59,7 @@ func main() {
 
 
 	// Deploy contract
-	addr, transaction, contract, err := contracts.DeploySimpleStorage(auth, client)
+	addr, transaction, contract, err := contracts.DeploySendMessage(auth, client)
 	if err != nil {
 		log.Fatalf("could not deploy contract: %v", err)
 	}
@@ -83,54 +73,43 @@ func main() {
 	fmt.Println("Mining...")
 	time.Sleep(60 * time.Second)
 
-	// Get value
-	info, _ := contract.Get(nil)
-	fmt.Printf("Get data: %d\n", info)
-
-	// Wait for mining
-	fmt.Println("Mining...")
-	time.Sleep(60 * time.Second)
-
-
-
 
 	// Change value
 	fmt.Println("Adding new value...")
-	tx, err := contract.Set(&bind.TransactOpts{
+	tx, err := contract.AddMessage(&bind.TransactOpts{
 		From:     auth.From,
 		Signer:   auth.Signer,
 		GasLimit: big.NewInt(2381623),
 		Value:    big.NewInt(0),
-	}, big.NewInt(42))
+		// Value:    gasPrice,
+	}, "hello ok0", "raph")
   if err != nil {
 		log.Fatalf("could not execute contract: %v", err)
 	}
-  fmt.Printf("Contract executed: %s\n", tx.String())
+  fmt.Printf("Contract executed: %v\n", tx.String())
 
 	// Wait for mining
 	fmt.Println("Mining...")
 	time.Sleep(60 * time.Second)
 
 	// Get value
-	info, _ = contract.Get(nil)
+	info, _ := contract.Messages(nil, big.NewInt(0))
 	fmt.Printf("Get data: %d\n", info)
-
-
-
 
 	// Change value
 	fmt.Println("Adding new value...")
 	addr = common.HexToAddress(addr.String())
-  contract2, err := contracts.NewSimpleStorage(addr, client)
+  contract2, err := contracts.NewSendMessage(addr, client)
   if err != nil {
     log.Fatalf("could not call contract: %v", err)
   }
-	tx, err = contract2.Set(&bind.TransactOpts{
+	tx, err = contract2.AddMessage(&bind.TransactOpts{
 		From:     auth.From,
 		Signer:   auth.Signer,
 		GasLimit: big.NewInt(2381623),
 		Value:    big.NewInt(0),
-	}, big.NewInt(13))
+		// Value:    gasPrice,
+	}, "hello ok1", "raph")
   if err != nil {
 		log.Fatalf("could not execute contract: %v", err)
 	}
@@ -141,6 +120,6 @@ func main() {
 	time.Sleep(60 * time.Second)
 
 	// Get value
-	info, _ = contract2.Get(nil)
-	fmt.Printf("Get data: %d\n", info)
+	info, _ = contract2.Messages(nil, big.NewInt(0))
+	fmt.Printf("Get data: %v\n", info)
 }

@@ -93,8 +93,9 @@ func DeployContract(deployData DeployContractData) map[string]interface{} {
 // Exec a smart contract
 func ExecContract(execData ExecContractData) map[string]interface{} {
   log.Println("Exec contract id: %s", execData.Address)
-
   log.Printf("method: %s", execData.Method)
+	// Connect to database
+	db := database.DatabaseConnection()
 
 	// Get contract
 	// var contract database.Contract
@@ -102,11 +103,9 @@ func ExecContract(execData ExecContractData) map[string]interface{} {
 
 	// Exec contract
 	txhash := ethereum.Exec()
-	// txhash := ethereum.Get()
-	log.Println("Txhash: ", txhash)
 	
 	// Add transaction
-	transaction := database.Transaction{Txhash: txhash, Type: "contract", Contract: address, Status: 0}
+	transaction := database.Transaction{Txhash: txhash, Type: "contract", Contract: "", Status: 0}
 	db.Save(&transaction)
 	log.Println("Transaction added, id:", transaction.ID)
 
