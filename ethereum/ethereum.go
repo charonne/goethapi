@@ -153,6 +153,8 @@ func Exec(address string, method string , params []string ) string {
   if err != nil {
     log.Fatalf("could not call contract: %v", err)
   }
+
+	
 	tx, err := contract.AddMessage(&bind.TransactOpts{
 		From:     auth.From,
 		Signer:   auth.Signer,
@@ -162,6 +164,8 @@ func Exec(address string, method string , params []string ) string {
   if err != nil {
 		log.Fatalf("could not execute contract: %v", err)
 	}
+
+
 	log.Printf("Contract executed, txhash: %s\n", tx.Hash().String())
 
 	return tx.Hash().String()

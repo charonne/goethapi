@@ -18,13 +18,20 @@ rename <code>config/app-example.yml</code> to <code>config/app.yml</code><br /> 
 
 Url: http://localhost:8080/contract/create/
 Method: Post
-Data: {"name": "simplestorage", "source": "test code etc."}
+Data: {"name": "<contract_name>", "source": "<contract_source>"}
+Example: {"name": "simplestorage", "source": "test code etc."}
 
 Url: http://localhost:8080/contract/deploy/
 Method: Post
-Data: {"id": "<contract.idkey>", "params": ["42"]}
+Data: {"id": "<contract_idkey>", "params": ["42"]}
+Example: {"address": "g73xKOwc", "method": "Get", "params": []}
 
 Url: http://localhost:8080/contract/exec/
 Method: Post
-Data: {"address": "<contract.idkey>", "method": "Set", "params": ["42"]}
-{"address": "g73xKOwc", "method": "Get", "params": []}
+Data: {"address": "<contract_adress>", "method": "Set", "params": []}
+Example: {"address": "0x15e2eb21fb84b0bb631a5853d6f4f3932bf4d3f5", "method": "Set", "params": ["42"]}
+
+Url: http://localhost:8080/contract/get/
+Method: Post
+Data: {"address": "<contract_adress>", "method": "Set", "params": ["42"]}
+Example: {"address": "0x15e2eb21fb84b0bb631a5853d6f4f3932bf4d3f5", "method": "Get", "params": []}
