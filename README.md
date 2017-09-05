@@ -16,15 +16,15 @@ rename <code>config/app-example.yml</code> to <code>config/app.yml</code><br /> 
 
 <h1>Examples</h1>
 
-http://localhost:8080/create/
+Url: http://localhost:8080/contract/create/
 Method: Post
 Data: {"name": "simplestorage", "source": "test code etc."}
 
-http://localhost:8080/deploy/
+Url: http://localhost:8080/contract/deploy/
 Method: Post
 Data: {"id": "<contract.idkey>", "params": ["42"]}
 
-http://localhost:8080/exec/
+Url: http://localhost:8080/contract/exec/
 Method: Post
 Data: {"address": "<contract.idkey>", "method": "Set", "params": ["42"]}
 {"address": "g73xKOwc", "method": "Get", "params": []}

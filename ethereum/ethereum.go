@@ -22,6 +22,7 @@ import (
 	"math/big"
 	"io/ioutil"
   "context"
+  "strconv"
 
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/ethereum/go-ethereum/common"
@@ -72,8 +73,18 @@ func Deploy(contract database.Contract) (string, string) {
   }
 	auth := bind.NewKeyedTransactor(key.PrivateKey)
 
+	/*
 	// Deploy contract
 	addr, tx, _, err := contracts.DeploySimpleStorage(auth, client)
+	// addr, _, contract, err := contracts.DeploySimpleStorage(auth, client)
+	if err != nil {
+		log.Fatalf("could not deploy contract: %v", err)
+	}
+	// Return txhash and contract address
+	return tx.Hash().String(), addr.String();
+	*/
+	// Deploy contract
+	addr, tx, _, err := contracts.DeploySendMessage(auth, client)
 	// addr, _, contract, err := contracts.DeploySimpleStorage(auth, client)
 	if err != nil {
 		log.Fatalf("could not deploy contract: %v", err)
@@ -83,8 +94,7 @@ func Deploy(contract database.Contract) (string, string) {
 }
 
 // Exec a smart contract
-func Exec(address string, method string ) string {
-  fmt.Println("Exec...")
+func Exec(address string, method string , params []string ) string {
 
 	// Dial Blockchain
 	endPoint := config.Config.Blockchain.Rawurl
@@ -116,6 +126,7 @@ func Exec(address string, method string ) string {
   }
 	auth := bind.NewKeyedTransactor(key.PrivateKey)
 
+	/*
 	// Change value
 	fmt.Println("Exec contract: ", address, "method: ", method)
 	addr := common.HexToAddress(address)
@@ -133,8 +144,55 @@ func Exec(address string, method string ) string {
 		log.Fatalf("could not execute contract: %v", err)
 	}
 	log.Printf("Contract executed, txhash: %s\n", tx.Hash().String())
+	*/
+
+	// Add message
+	fmt.Println("Exec contract: ", address, "method: ", method)
+	addr := common.HexToAddress(address)
+  contract, err := contracts.NewSendMessage(addr, client)
+  if err != nil {
+    log.Fatalf("could not call contract: %v", err)
+  }
+	tx, err := contract.AddMessage(&bind.TransactOpts{
+		From:     auth.From,
+		Signer:   auth.Signer,
+		GasLimit: big.NewInt(2381623),
+		Value:    big.NewInt(0),
+	}, params[0], params[1])
+  if err != nil {
+		log.Fatalf("could not execute contract: %v", err)
+	}
+	log.Printf("Contract executed, txhash: %s\n", tx.Hash().String())
 
 	return tx.Hash().String()
+}
+
+// Exec a smart contract data
+func Get(address string, method string , params []string ) struct { Text string; Author string } {
+	// Dial Blockchain
+	endPoint := config.Config.Blockchain.Rawurl
+	client, err := ethclient.Dial(endPoint)
+	if err != nil {
+			log.Fatal(err)
+	}
+
+	addr := common.HexToAddress(address)
+  contract, err := contracts.NewSendMessage(addr, client)
+  if err != nil {
+    log.Fatalf("could not call contract: %v", err)
+  }
+	/*
+  info, _ := contract.Get(nil)
+	fmt.Printf("Get data: %d\n", info)
+	*/
+	id, err := strconv.ParseInt(params[0], 10, 64)
+	if err == nil {
+	    fmt.Printf("i=%d, type: %T\n", id, id)
+	}
+	data, _ := contract.Messages(nil, big.NewInt(id))
+	fmt.Printf("Get data: %d\n", data)
+
+	return data
 }
 
 /*

@@ -40,6 +40,11 @@ type ContractExecData struct {
   Params []string
 }
 
+type ContractGetData struct {
+  Address string
+  Method string
+  Params []string
+}
 
 // Create a smart contract
 func ContractCreate(cdData ContractCreateData) map[string]interface{} {
@@ -100,16 +105,17 @@ func ContractDeploy(deployData ContractDeployData) map[string]interface{} {
 // Exec a smart contract
 func ContractExec(execData ContractExecData) map[string]interface{} {
   log.Printf("Exec contract address: %s\n", execData.Address)
-  log.Printf("method: %s\n", execData.Method)
+  log.Printf("Method: %s, params: %s\n", execData.Method, execData.Params)
+
 	// Connect to database
 	db := database.DatabaseConnection()
 
 	// Get contract
-	var contract database.Contract
-	db.First(&contract, "address = ?", execData.Address)
+	var contractDeployed database.ContractDeployed
+	db.First(&contractDeployed, "Address = ?", execData.Address)
 
 	// Exec contract
-	txhash := ethereum.Exec(execData.Address, execData.Method)
+	txhash := ethereum.Exec(execData.Address, execData.Method, execData.Params)
 
 	// Add transaction
 	transaction := database.Transaction{Txhash: txhash, Type: "exec", Contract: "", Status: 0}
@@ -125,31 +131,34 @@ func ContractExec(execData ContractExecData) map[string]interface{} {
   return responseData
 }
 
-
 // Get a smart contract
-func ContractGet(execData ContractExecData) map[string]interface{} {
-  log.Printf("Exec contract address: %s\n", execData.Address)
-  log.Printf("method: %s\n", execData.Method)
+func ContractGet(getData ContractGetData) map[string]interface{} {
+  log.Printf("Get contract address: %s\n", getData.Address)
+  log.Printf("Method: %s, params: %s\n", getData.Method, getData.Params)
+
 	// Connect to database
 	db := database.DatabaseConnection()
 
 	// Get contract
-	var contract database.Contract
-	db.First(&contract, "address = ?", execData.Address)
+	var contractDeployed database.ContractDeployed
+	db.First(&contractDeployed, "Address = ?", getData.Address)
 
 	// Exec contract
-	txhash := ethereum.Exec(execData.Address, execData.Method)
+	data := ethereum.Get(getData.Address, getData.Method, getData.Params)
 
-	// Add transaction
-	transaction := database.Transaction{Txhash: txhash, Type: "exec", Contract: "", Status: 0}
-	db.Save(&transaction)
-	log.Println("Transaction added, id:", transaction.ID)
-
+	// Response data
+  responseData := map[string]interface{}{
+    "message": data.Text,
+    "author": data.Author,
+  }
+  return responseData
+	/*
   // Response data
   responseData := map[string]interface{}{
     "status": "success",
-    "address": execData.Address,
+    "address": getData.Address,
     "txhash": txhash,
   }
   return responseData
+	*/
 }

@@ -93,6 +93,25 @@ func execHandler(w http.ResponseWriter, req *http.Request) {
   response(w, responseData)
 }
 
+// Get a smart contract
+func getHandler(w http.ResponseWriter, req *http.Request) {
+
+  // Decode json
+  decoder := json.NewDecoder(req.Body)
+  var getData api.ContractGetData
+  err := decoder.Decode(&getData)
+  if err != nil {
+      log.Println(err)
+  }
+  defer req.Body.Close()
+
+  // Smart contract
+  responseData := api.ContractGet(getData)
+
+  // Response
+  response(w, responseData)
+}
+
 // Start server
 func main() {
   database.InitialiseDb()
@@ -102,6 +121,7 @@ func main() {
   http.HandleFunc("/contract/create/", createHandler)
   http.HandleFunc("/contract/deploy/", deployHandler)
   http.HandleFunc("/contract/exec/", execHandler)
+  http.HandleFunc("/contract/get/", getHandler)
 
   //
   err := http.ListenAndServe(":8081", nil)
