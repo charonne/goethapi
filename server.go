@@ -41,7 +41,7 @@ func createHandler(w http.ResponseWriter, req *http.Request) {
 
   // Decode json
   decoder := json.NewDecoder(req.Body)
-  var createData api.CreateContractData
+  var createData api.ContractCreateData
   err := decoder.Decode(&createData)
   if err != nil {
       log.Println(err)
@@ -49,7 +49,7 @@ func createHandler(w http.ResponseWriter, req *http.Request) {
   defer req.Body.Close()
 
   // Smart contract
-  responseData := api.CreateContract(createData)
+  responseData := api.ContractCreate(createData)
 
   // Response
   response(w, responseData)
@@ -60,7 +60,7 @@ func deployHandler(w http.ResponseWriter, req *http.Request) {
 
   // Decode json
   decoder := json.NewDecoder(req.Body)
-  var deployData api.DeployContractData
+  var deployData api.ContractDeployData
   err := decoder.Decode(&deployData)
   if err != nil {
       log.Println(err)
@@ -68,7 +68,7 @@ func deployHandler(w http.ResponseWriter, req *http.Request) {
   defer req.Body.Close()
 
   // Smart contract
-  responseData := api.DeployContract(deployData)
+  responseData := api.ContractDeploy(deployData)
 
   // Response
   response(w, responseData)
@@ -79,7 +79,7 @@ func execHandler(w http.ResponseWriter, req *http.Request) {
 
   // Decode json
   decoder := json.NewDecoder(req.Body)
-  var execData api.ExecContractData
+  var execData api.ContractExecData
   err := decoder.Decode(&execData)
   if err != nil {
       log.Println(err)
@@ -87,7 +87,7 @@ func execHandler(w http.ResponseWriter, req *http.Request) {
   defer req.Body.Close()
 
   // Smart contract
-  responseData := api.ExecContract(execData)
+  responseData := api.ContractExec(execData)
 
   // Response
   response(w, responseData)
@@ -99,9 +99,13 @@ func main() {
 
   log.Println("Server starting...")
 
-  http.HandleFunc("/create/", createHandler)
-  http.HandleFunc("/deploy/", deployHandler)
-  http.HandleFunc("/exec/", execHandler)
+  http.HandleFunc("/contract/create/", createHandler)
+  http.HandleFunc("/contract/deploy/", deployHandler)
+  http.HandleFunc("/contract/exec/", execHandler)
+
   //
-  http.ListenAndServe(":8080", nil)
+  err := http.ListenAndServe(":8081", nil)
+  if err != nil {
+        log.Fatal("ListenAndServe: ", err)
+    }
 }

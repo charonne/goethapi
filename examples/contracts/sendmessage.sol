@@ -13,4 +13,9 @@ contract SendMessage {
         messages.push(newMessage);
     }
 
+    function updateMessage(uint id, string text, string author) {
+        Message memory newMessage = Message(text, author);
+        messages[id] = newMessage;
+    }
+
 }

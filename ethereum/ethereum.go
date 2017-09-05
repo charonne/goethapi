@@ -83,7 +83,7 @@ func Deploy(contract database.Contract) (string, string) {
 }
 
 // Exec a smart contract
-func Exec() string {
+func Exec(address string, method string ) string {
   fmt.Println("Exec...")
 
 	// Dial Blockchain
@@ -117,8 +117,8 @@ func Exec() string {
 	auth := bind.NewKeyedTransactor(key.PrivateKey)
 
 	// Change value
-	fmt.Println("Adding new value...")
-	addr := common.HexToAddress("0xf3d8ade61d450d264eb0dc592944db7d21bbdeef")
+	fmt.Println("Exec contract: ", address, "method: ", method)
+	addr := common.HexToAddress(address)
   contract, err := contracts.NewSimpleStorage(addr, client)
   if err != nil {
     log.Fatalf("could not call contract: %v", err)

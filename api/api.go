@@ -24,17 +24,17 @@ import (
 )
 
 
-type CreateContractData struct {
+type ContractCreateData struct {
   Name string
   Source string
 }
 
-type DeployContractData struct {
+type ContractDeployData struct {
   Id string
   Params []string
 }
 
-type ExecContractData struct {
+type ContractExecData struct {
   Address string
   Method string
   Params []string
@@ -42,7 +42,7 @@ type ExecContractData struct {
 
 
 // Create a smart contract
-func CreateContract(cdData CreateContractData) map[string]interface{} {
+func ContractCreate(cdData ContractCreateData) map[string]interface{} {
   // Connect to database
   db := database.DatabaseConnection()
 
@@ -63,7 +63,7 @@ func CreateContract(cdData CreateContractData) map[string]interface{} {
 }
 
 // Deploy a smart contract
-func DeployContract(deployData DeployContractData) map[string]interface{} {
+func ContractDeploy(deployData ContractDeployData) map[string]interface{} {
   log.Printf("Deploy contract id: %s", deployData.Id)
   // Connect to database
   db := database.DatabaseConnection()
@@ -75,6 +75,13 @@ func DeployContract(deployData DeployContractData) map[string]interface{} {
   // Deploy contract
   txhash, address := ethereum.Deploy(contract)
 	log.Println("Txhash: ", txhash, ", Address: ", address)
+
+	// Add contract deployed
+	contractDeployed := database.ContractDeployed{Address: address, Txhash: txhash}
+  db.Save(&contractDeployed)
+	// Set contract to deployed
+	contract.Deployed = true
+	db.Save(&contract)
 
 	// Add transaction
   transaction := database.Transaction{Txhash: txhash, Type: "contract", Contract: address, Status: 0}
@@ -91,29 +98,58 @@ func DeployContract(deployData DeployContractData) map[string]interface{} {
 }
 
 // Exec a smart contract
-func ExecContract(execData ExecContractData) map[string]interface{} {
-  log.Println("Exec contract id: %s", execData.Address)
-  log.Printf("method: %s", execData.Method)
+func ContractExec(execData ContractExecData) map[string]interface{} {
+  log.Printf("Exec contract address: %s\n", execData.Address)
+  log.Printf("method: %s\n", execData.Method)
 	// Connect to database
 	db := database.DatabaseConnection()
 
 	// Get contract
-	// var contract database.Contract
-	// db.First(&contract, "idkey = ?", deployData.Id)
+	var contract database.Contract
+	db.First(&contract, "address = ?", execData.Address)
 
 	// Exec contract
-	txhash := ethereum.Exec()
-	
+	txhash := ethereum.Exec(execData.Address, execData.Method)
+
 	// Add transaction
-	transaction := database.Transaction{Txhash: txhash, Type: "contract", Contract: "", Status: 0}
+	transaction := database.Transaction{Txhash: txhash, Type: "exec", Contract: "", Status: 0}
 	db.Save(&transaction)
 	log.Println("Transaction added, id:", transaction.ID)
 
   // Response data
   responseData := map[string]interface{}{
     "status": "success",
-    "id": "7ed4944c788",
-    "txhash": "0xee197ddbd7912e1d98b5c9b81b51aded6d39e0fbd4eb36e3485ee0a5d4d1feb9",
+    "address": execData.Address,
+    "txhash": txhash,
+  }
+  return responseData
+}
+
+
+// Get a smart contract
+func ContractGet(execData ContractExecData) map[string]interface{} {
+  log.Printf("Exec contract address: %s\n", execData.Address)
+  log.Printf("method: %s\n", execData.Method)
+	// Connect to database
+	db := database.DatabaseConnection()
+
+	// Get contract
+	var contract database.Contract
+	db.First(&contract, "address = ?", execData.Address)
+
+	// Exec contract
+	txhash := ethereum.Exec(execData.Address, execData.Method)
+
+	// Add transaction
+	transaction := database.Transaction{Txhash: txhash, Type: "exec", Contract: "", Status: 0}
+	db.Save(&transaction)
+	log.Println("Transaction added, id:", transaction.ID)
+
+  // Response data
+  responseData := map[string]interface{}{
+    "status": "success",
+    "address": execData.Address,
+    "txhash": txhash,
   }
   return responseData
 }

@@ -43,7 +43,7 @@ func main() {
 	if err != nil {
 			log.Fatal(err)
 	}
-	
+
 	// 	Get transact opt
 	keystoreFile := config.Config.Account.Keystore
   password := config.Config.Account.Passphrase
@@ -71,7 +71,7 @@ func main() {
 
 	// Wait for mining
 	fmt.Println("Mining...")
-	time.Sleep(60 * time.Second)
+	time.Sleep(120 * time.Second)
 
 
 	// Change value
@@ -90,7 +90,7 @@ func main() {
 
 	// Wait for mining
 	fmt.Println("Mining...")
-	time.Sleep(60 * time.Second)
+	time.Sleep(120 * time.Second)
 
 	// Get value
 	info, _ := contract.Messages(nil, big.NewInt(0))
@@ -117,7 +117,7 @@ func main() {
 
 	// Wait for mining
 	fmt.Println("Mining...")
-	time.Sleep(60 * time.Second)
+	time.Sleep(120 * time.Second)
 
 	// Get value
 	info, _ = contract2.Messages(nil, big.NewInt(0))

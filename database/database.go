@@ -13,12 +13,24 @@ import (
 // Smart contract structure
 type Contract struct {
   ID          uint `gorm:"primary_key"`
-  Idkey       string
+  Idkey       string `gorm:"size:50"`
 
-  Name        string
+  Name        string `gorm:"size:255"`
   Source      string
   Bytecode    string
   Interface   string
+	Deployed		bool
+
+  CreatedAt   time.Time
+  UpdatedAt   time.Time
+  DeletedAt   *time.Time
+}
+
+// Smart contract structure
+type ContractDeployed struct {
+  ID          uint `gorm:"primary_key"`
+  Address     string `gorm:"size:50"`
+	Txhash      string `gorm:"size:50"`
 
   CreatedAt   time.Time
   UpdatedAt   time.Time
@@ -29,11 +41,11 @@ type Contract struct {
 type Transaction struct {
   ID          uint `gorm:"primary_key"`
 
-	Txhash      string
-	Type      	string // contract, exec
-  Contract    string
+	Txhash      string `gorm:"size:50"`
+	Type      	string `gorm:"size:50"` // contract, exec
+  Contract    string `gorm:"size:50"`
 	Status			int
-	
+
   CreatedAt   time.Time
   UpdatedAt   time.Time
   DeletedAt   *time.Time
@@ -62,6 +74,7 @@ func InitialiseDb () {
 
   // Migrate the schema
   db.AutoMigrate(&Contract{})
+	db.AutoMigrate(&ContractDeployed{})
   db.AutoMigrate(&Transaction{})
 
   // Close db
