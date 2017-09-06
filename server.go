@@ -20,6 +20,7 @@ import (
   "log"
   "net/http"
   "encoding/json"
+  "net/http/httputil"
 
   "github.com/charonne/goethapi/database"
   "github.com/charonne/goethapi/api"
@@ -82,10 +83,15 @@ func execHandler(w http.ResponseWriter, req *http.Request) {
   // Decode json
   decoder := json.NewDecoder(req.Body)
 
-log.Println(decoder)
+  // Save a copy of this request for debugging.
+  requestDump, err := httputil.DumpRequest(req, true)
+  if err != nil {
+    log.Println(err)
+  }
+  log.Println(string(requestDump))
 
   var execData api.ContractExecData
-  err := decoder.Decode(&execData)
+  err = decoder.Decode(&execData)
   if err != nil {
       log.Println(err)
   }
