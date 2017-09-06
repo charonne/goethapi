@@ -7,8 +7,10 @@ import(
 
 var Config = struct {
 	App struct {
-		Name  string
-		Version  string
+		Name    string
+		Version string
+		Url     string
+		Port    string
 	}
 
 	Database struct {
@@ -16,7 +18,7 @@ var Config = struct {
 		Host        string
 		Dbname      string
 		User        string
-		Password      string
+		Password    string
 	}
 
 	Blockchain struct {
@@ -27,7 +29,7 @@ var Config = struct {
 	Account struct {
     Address     string
     Keystore    string
-		Json         string
+		Json        string
 		Passphrase  string
 	}
 }{}

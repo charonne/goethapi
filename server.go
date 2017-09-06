@@ -23,6 +23,8 @@ import (
 
   "github.com/charonne/goethapi/database"
   "github.com/charonne/goethapi/api"
+
+	"github.com/charonne/goethapi/config"
 )
 
 // Send response
@@ -116,7 +118,7 @@ func getHandler(w http.ResponseWriter, req *http.Request) {
 func main() {
   database.InitialiseDb()
 
-  log.Println("Server starting...")
+  log.Println("Server starting on port:", config.Config.App.Port)
 
   http.HandleFunc("/contract/create/", createHandler)
   http.HandleFunc("/contract/deploy/", deployHandler)
@@ -124,7 +126,7 @@ func main() {
   http.HandleFunc("/contract/get/", getHandler)
 
   //
-  err := http.ListenAndServe(":8081", nil)
+  err := http.ListenAndServe(":" + config.Config.App.Port, nil)
   if err != nil {
         log.Fatal("ListenAndServe: ", err)
     }

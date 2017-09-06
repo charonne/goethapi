@@ -2,6 +2,8 @@
 app:
   name: GoethApi
   version: 0.1
+  url: http://localhost
+  port: 8080
 
 env: staging
 
