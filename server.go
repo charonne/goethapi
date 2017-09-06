@@ -81,6 +81,9 @@ func execHandler(w http.ResponseWriter, req *http.Request) {
 
   // Decode json
   decoder := json.NewDecoder(req.Body)
+
+log.Println(decoder)
+
   var execData api.ContractExecData
   err := decoder.Decode(&execData)
   if err != nil {

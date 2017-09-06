@@ -112,8 +112,28 @@ func ContractExec(execData ContractExecData) map[string]interface{} {
 
 	// Get contract
 	var contractDeployed database.ContractDeployed
-	db.First(&contractDeployed, "Address = ?", execData.Address)
 
+	if err := db.First(&contractDeployed, "Address = ?", execData.Address).Error; err != nil {
+		// Response data
+		responseData := map[string]interface{}{
+			"status": "error",
+			"address": execData.Address,
+			"message": "contract not found",
+		}
+		return responseData
+  }
+	/*
+	db.First(&contractDeployed, "Address = ?", execData.Address)
+	if (!contractDeployed) {
+		// Response data
+		responseData := map[string]interface{}{
+			"status": "error",
+			"address": execData.Address,
+			"message": "contract not found",
+		}
+		return responseData
+	}
+	*/
 	// Exec contract
 	txhash := ethereum.Exec(execData.Address, execData.Method, execData.Params)
 
