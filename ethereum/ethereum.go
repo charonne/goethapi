@@ -154,7 +154,7 @@ func Exec(address string, method string , params []string ) string {
     log.Fatalf("could not call contract: %v", err)
   }
 
-	
+
 	tx, err := contract.AddMessage(&bind.TransactOpts{
 		From:     auth.From,
 		Signer:   auth.Signer,
@@ -199,10 +199,8 @@ func Get(address string, method string , params []string ) struct { Text string;
 	return data
 }
 
-/*
-func Get() string {
-  fmt.Println("Exec...")
-
+// Get transaction confirmation
+func GetTransactionConfirmation(txhash string) bool {
 	// Dial Blockchain
 	endPoint := config.Config.Blockchain.Rawurl
 	client, err := ethclient.Dial(endPoint)
@@ -210,14 +208,20 @@ func Get() string {
 			log.Fatal(err)
 	}
 
-	addr := common.HexToAddress("0x3330b99803931327cfcd92382189a38923817a66")
-  contract, err := contracts.NewSimpleStorage(addr, client)
-  if err != nil {
-    log.Fatalf("could not call contract: %v", err)
-  }
-  info, _ := contract.Get(nil)
-	fmt.Printf("Get data: %d\n", info)
+  // Get context
+  ctx := context.Background()
 
-	return "0xee197ddbd7912e1d98b5c9b81b51aded6d39e0fbd4eb36e3485ee0a5d4d1feb9"
+  addr := common.HexToHash(txhash)
+  _, isPending, err := client.TransactionByHash(ctx, addr)
+  if err != nil {
+    log.Printf("Error transaction: %v", err)
+  }
+  //fmt.Println(infos)
+  fmt.Println("Is pending:", isPending)
+
+	if (isPending == false) {
+		return true
+	} else {
+		return false
+	}
 }
-*/

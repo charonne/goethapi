@@ -11,6 +11,19 @@ import (
 
 
 // Smart contract structure
+type Application struct {
+  ID          uint `gorm:"primary_key"`
+  Idkey       string `gorm:"size:50"`
+
+  Name        string `gorm:"size:255"`
+  Callback    string `gorm:"size:255"`
+
+  CreatedAt   time.Time
+  UpdatedAt   time.Time
+  DeletedAt   *time.Time
+}
+
+// Smart contract structure
 type Contract struct {
   ID          uint `gorm:"primary_key"`
   Idkey       string `gorm:"size:50"`
@@ -30,7 +43,7 @@ type Contract struct {
 type ContractDeployed struct {
   ID          uint `gorm:"primary_key"`
   Address     string `gorm:"size:50"`
-	Txhash      string `gorm:"size:50"`
+	Txhash      string `gorm:"size:100"`
 
   CreatedAt   time.Time
   UpdatedAt   time.Time
@@ -41,10 +54,10 @@ type ContractDeployed struct {
 type Transaction struct {
   ID          uint `gorm:"primary_key"`
 
-	Txhash      string `gorm:"size:50"`
+	Txhash      string `gorm:"size:100"`
 	Type      	string `gorm:"size:50"` // contract, exec
   Contract    string `gorm:"size:50"`
-	Status			int
+	Confirmed		bool
 
   CreatedAt   time.Time
   UpdatedAt   time.Time

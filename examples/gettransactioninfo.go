@@ -17,18 +17,18 @@
 package main
 
 import(
-    "fmt"
-    "log"
-    "context"
-    "github.com/fatih/color"
+  "fmt"
+  "log"
+  "context"
+  "github.com/fatih/color"
 
-    "github.com/ethereum/go-ethereum/ethclient"
-  	"github.com/ethereum/go-ethereum/common"
-    // "github.com/ethereum/go-ethereum/accounts/keystore"
-    // "github.com/ethereum/go-ethereum/crypto"
+  "github.com/ethereum/go-ethereum/ethclient"
+	"github.com/ethereum/go-ethereum/common"
+  // "github.com/ethereum/go-ethereum/accounts/keystore"
+  // "github.com/ethereum/go-ethereum/crypto"
 
-    "github.com/charonne/goethapi/config"
-    // "github.com/charonne/goethapi/converter"
+  "github.com/charonne/goethapi/config"
+  // "github.com/charonne/goethapi/converter"
 )
 
 func getClient() (client *ethclient.Client, err error) {

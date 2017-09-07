@@ -24,6 +24,7 @@ import (
 
   "github.com/charonne/goethapi/database"
   "github.com/charonne/goethapi/api"
+  "github.com/charonne/goethapi/ticker"
 
 	"github.com/charonne/goethapi/config"
 )
@@ -126,6 +127,9 @@ func getHandler(w http.ResponseWriter, req *http.Request) {
 // Start server
 func main() {
   database.InitialiseDb()
+
+  log.Println("Start ticker")
+  go ticker.Start()
 
   log.Println("Server starting on port:", config.Config.App.Port)
 

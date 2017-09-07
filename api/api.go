@@ -89,7 +89,7 @@ func ContractDeploy(deployData ContractDeployData) map[string]interface{} {
 	db.Save(&contract)
 
 	// Add transaction
-  transaction := database.Transaction{Txhash: txhash, Type: "contract", Contract: address, Status: 0}
+  transaction := database.Transaction{Txhash: txhash, Type: "contract", Contract: address, Confirmed: false}
   db.Save(&transaction)
   log.Println("Transaction added, id:", transaction.ID)
 
@@ -111,22 +111,24 @@ func ContractExec(execData ContractExecData) map[string]interface{} {
 	db := database.DatabaseConnection()
 
 	// Get contract
-	// var contractDeployed database.ContractDeployed
-	// if err := db.First(&contractDeployed, "Address = ?", execData.Address).Error; err != nil {
-	// 	// Response data
-	// 	responseData := map[string]interface{}{
-	// 		"status": "error",
-	// 		"address": execData.Address,
-	// 		"message": "contract not found",
-	// 	}
-	// 	return responseData
-  // }
+	var contractDeployed database.ContractDeployed
+	if err := db.First(&contractDeployed, "Address = ?", execData.Address).Error; err != nil {
+		/*
+		// Response data
+		responseData := map[string]interface{}{
+			"status": "error",
+			"address": execData.Address,
+			"message": "contract not found",
+		}
+		return responseData
+		*/
+  }
 
 	// Exec contract
 	txhash := ethereum.Exec(execData.Address, execData.Method, execData.Params)
 
 	// Add transaction
-	transaction := database.Transaction{Txhash: txhash, Type: "exec", Contract: "", Status: 0}
+	transaction := database.Transaction{Txhash: txhash, Type: "exec", Contract: "", Confirmed: false}
 	db.Save(&transaction)
 	log.Println("Transaction added, id:", transaction.ID)
 

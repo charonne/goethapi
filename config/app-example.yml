@@ -28,3 +28,8 @@ account:
   keystore: your_path_to_account_file # ex: /home/user/.ethereum/keystore/UTC--2017-08-19T14-23-53.602149011Z--ac67490c7a9463a26119957718a835d41843adcd
   json: 'your_json_file_data' # ex: '{"address":"ac67490c7a9463a26119957718a835d41843adcd","crypto":{"cipher":"aes-128-ctr","ciphertext":"4631749406575f77f09a8b2ddb5ac2cb67eafcaa807ab7f15ed17394a4f1a22f","cipherparams":{"iv":"cd971323b1655b997c5fbb29e2adebf9"},"kdf":"scrypt","kdfparams":{"dklen":32,"n":262144,"p":1,"r":8,"salt":"580617f55b0215989fab4bf598ca72b9b1dbb3a7e206f10b144203341698a35d"},"mac":"ff00c542fd659136e96ecf41758775f9011cc9ae7f0d5b58794b2209af7e4ac7"},"id":"cfaeb85d-bc64-42d8-80c9-b7acad5a431d","version":3}'
   passphrase: your_account_passphrase # ex: mypassword
+
+ticker:
+  period: 60 # in seconds
+
+callback: your_callback_url # ex: http://api.example.com/

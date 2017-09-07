@@ -32,6 +32,12 @@ var Config = struct {
 		Json        string
 		Passphrase  string
 	}
+
+	Ticker struct {
+    Period      int
+	}
+
+  Callback      string
 }{}
 
 func init() {
