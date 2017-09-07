@@ -89,7 +89,7 @@ func ContractDeploy(deployData ContractDeployData) map[string]interface{} {
 	db.Save(&contract)
 
 	// Add transaction
-  transaction := database.Transaction{Txhash: txhash, Type: "contract", Contract: address, Confirmed: false}
+  transaction := database.Transaction{Txhash: txhash, Type: "contract", Contract: address, Status: 0, Confirmed: false}
   db.Save(&transaction)
   log.Println("Transaction added, id:", transaction.ID)
 
@@ -128,7 +128,7 @@ func ContractExec(execData ContractExecData) map[string]interface{} {
 	txhash := ethereum.Exec(execData.Address, execData.Method, execData.Params)
 
 	// Add transaction
-	transaction := database.Transaction{Txhash: txhash, Type: "exec", Contract: "", Confirmed: false}
+	transaction := database.Transaction{Txhash: txhash, Type: "exec", Contract: "", Status: 0, Confirmed: false}
 	db.Save(&transaction)
 	log.Println("Transaction added, id:", transaction.ID)
 
