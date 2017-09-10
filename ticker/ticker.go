@@ -18,7 +18,7 @@ package ticker
 
 import (
   "time"
-  "fmt"
+  "log"
   "net/http"
   "io/ioutil"
   "bytes"
@@ -34,7 +34,7 @@ var period = config.Config.Ticker.Period
 // Send confirmation to callback
 func SendToCallback(txhash string) {
   url := config.Config.Callback
-  //fmt.Println("URL:>", url)
+  //log.Println("URL:>", url)
 
   var jsonStr = []byte(`{"txhash": "` + txhash + `", "confirmed": true}`)
   req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
@@ -48,10 +48,10 @@ func SendToCallback(txhash string) {
   }
   defer resp.Body.Close()
 
-  // fmt.Println("response Status:", resp.Status)
-  // fmt.Println("response Headers:", resp.Header)
+  // log.Println("response Status:", resp.Status)
+  // log.Println("response Headers:", resp.Header)
   body, _ := ioutil.ReadAll(resp.Body)
-  fmt.Println(string(body))
+  log.Println(string(body))
 }
 
 // Start ticker
@@ -64,7 +64,7 @@ func Start() {
     select {
       // Ticker confirmation
       case <- tickTxConfirmation:
-        fmt.Println("Ticker ticked")
+        log.Println("Ticker ticked")
 
         // Connect to database
         db := database.DatabaseConnection()
@@ -77,18 +77,18 @@ func Start() {
           db.ScanRows(rows, &transaction)
           // Check confirmation
           if (ethereum.GetTransactionConfirmation(transaction.Txhash) == true) {
-            fmt.Println("Transaction confirmed: ", transaction.Txhash)
+            log.Println("Transaction confirmed: ", transaction.Txhash)
             // Set confirmed
             transaction.Confirmed = true
             db.Save(&transaction)
             // Send to Callback
             SendToCallback(transaction.Txhash)
           } else {
-            fmt.Println("Transaction not confirmed: ", transaction.Txhash)
+            log.Println("Transaction not confirmed: ", transaction.Txhash)
           }
         }
         db.Close()
     }
   }
-  
+
 }

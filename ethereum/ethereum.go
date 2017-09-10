@@ -154,25 +154,47 @@ func Exec(address string, method string , params []string ) string {
     log.Fatalf("could not call contract: %v", err)
   }
 
+	if (method == "AddMessage") {
+		fmt.Println("Add Message")
+		tx, err := contract.AddMessage(&bind.TransactOpts{
+			From:     auth.From,
+			Signer:   auth.Signer,
+			GasLimit: big.NewInt(2381623),
+			Value:    big.NewInt(0),
+		}, params[0], params[1], params[2], params[3], params[4])
+	  if err != nil {
+			log.Fatalf("could not execute contract: %v", err)
+		}
+		log.Printf("Contract executed, txhash: %s\n", tx.Hash().String())
+		return tx.Hash().String()
+	} else if (method == "UpdateMessage") {
+		fmt.Println("Update Message")
+		// id, _ := strconv.Atoi(params[0])
+		id, _ := strconv.ParseInt(params[0], 10, 64)
 
-	tx, err := contract.AddMessage(&bind.TransactOpts{
-		From:     auth.From,
-		Signer:   auth.Signer,
-		GasLimit: big.NewInt(2381623),
-		Value:    big.NewInt(0),
-	}, params[0], params[1])
-  if err != nil {
-		log.Fatalf("could not execute contract: %v", err)
+		tx, err := contract.UpdateMessage(&bind.TransactOpts{
+			From:     auth.From,
+			Signer:   auth.Signer,
+			GasLimit: big.NewInt(2381623),
+			Value:    big.NewInt(0),
+		}, big.NewInt(id), params[1], params[2], params[3], params[4], params[5])
+	  if err != nil {
+			log.Fatalf("could not execute contract: %v", err)
+		}
+		log.Printf("Contract executed, txhash: %s\n", tx.Hash().String())
+		return tx.Hash().String()
 	}
-
-
-	log.Printf("Contract executed, txhash: %s\n", tx.Hash().String())
-
-	return tx.Hash().String()
+	fmt.Println("Unknown method: ", method)
+	return ""
 }
 
 // Exec a smart contract data
-func Get(address string, method string , params []string ) struct { Text string; Author string } {
+func Get(address string, method string , params []string ) struct {
+	Text       string
+	Author     string
+	Categories string
+	Url        string
+	Hash       string } {
 	// Dial Blockchain
 	endPoint := config.Config.Blockchain.Rawurl
 	client, err := ethclient.Dial(endPoint)

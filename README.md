@@ -19,25 +19,26 @@ rename <code>config/app-example.yml</code> to <code>config/app.yml</code><br /> 
 Url: http://localhost:8080/contract/create/
 Method: Post
 Data: {"name": "<contract_name>", "source": "<contract_source>"}
-Example: {"name": "simplestorage", "source": "test code etc."}
+Example:
+curl -H "Content-Type: application/json" -X POST -d '{"name": "simplestorage", "source": "test code etc."}' http://localhost:8080/contract/create/
 
 Url: http://localhost:8080/contract/deploy/
 Method: Post
 Data: {"id": "<contract_idkey>", "params": ["42"]}
-Example: {"address": "g73xKOwc", "method": "Get", "params": []}
+Example:
+curl -H "Content-Type: application/json" -X POST -d '{"address": "g73xKOwc", "method": "Get", "params": []}' http://localhost:8080/contract/deploy/
 
 Url: http://localhost:8080/contract/exec/
 Method: Post
-Data: {"address": "<contract_adress>", "method": "Set", "params": []}
-Example: {"address": "0x15e2eb21fb84b0bb631a5853d6f4f3932bf4d3f5", "method": "Set", "params": ["42"]}
+Data:
+Example:
+curl -H "Content-Type: application/json" -X POST -d '{"address": "<contract_adress>", "method": "Set", "params": []}' http://localhost:8080/contract/exec/
 
 Url: http://localhost:8080/contract/get/
 Method: Post
 Data: {"address": "<contract_adress>", "method": "Set", "params": ["42"]}
-Example: {"address": "0x15e2eb21fb84b0bb631a5853d6f4f3932bf4d3f5", "method": "Get", "params": []}
-
-
-
+Example:
+curl -H "Content-Type: application/json" -X POST -d '{"address": "0x15e2eb21fb84b0bb631a5853d6f4f3932bf4d3f5", "method": "Get", "params": []}' http://localhost:8080/contract/get/
 
 
 <h1>Todo</h1>
