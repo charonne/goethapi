@@ -1,46 +1,39 @@
 package config
 
+import (
+  "log"
+  "github.com/spf13/viper"
 
-import(
-  "github.com/jinzhu/configor"
+  "runtime"
+  "path"
 )
 
-var Config = struct {
-	App struct {
-		Name    string
-		Version string
-		Url     string
-		Port    string
-	}
+// Get config path
+func getConfigPath() string {
 
-	Database struct {
-		Connection  string
-		Host        string
-		Dbname      string
-		User        string
-		Password    string
-	}
+  _, filename, _, ok := runtime.Caller(0)
+  if !ok {
+      panic("No caller information")
+  }
+  path := path.Dir(filename)
 
-	Blockchain struct {
-		Rawurl        string
-		Keystorepath  string
-	}
+  return path
+}
 
-	Account struct {
-    Address     string
-    Keystore    string
-		Json        string
-		Passphrase  string
-	}
+// Get config
+func Config() *viper.Viper {
 
-	Ticker struct {
-    Period      int
-	}
+  configPath := getConfigPath()
 
-  Callback      string
-}{}
+  config := viper.New()
+  config.SetConfigName("app")     // no need to include file extension
+  config.AddConfigPath(configPath)  // set the path of your config file
+  config.AddConfigPath("config")  // set the path of your config file
 
-func init() {
-  // Config
-  configor.Load(&Config, "src/github.com/charonne/goethapi/config/app.yml")
+  err := config.ReadInConfig()
+  if err != nil {
+    log.Fatalf("Config file error: %v", err)
+  }
+
+  return config
 }

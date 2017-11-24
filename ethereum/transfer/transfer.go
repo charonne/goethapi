@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the gethitihteg library. If not, see <http://www.gnu.org/licenses/>.
 
-package main
+package transfer
 
 import (
 	"fmt"
@@ -31,25 +31,31 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/accounts/keystore"
 
+	"github.com/charonne/goethapi/ethereum/tools"
   "github.com/charonne/goethapi/config"
 )
 
-func main() {
-	fmt.Printf("%s v%s\n", config.Config.App.Name, config.Config.App.Version)
+var apiconfig = config.Config()
 
-  endPoint := config.Config.Blockchain.Rawurl
+func Transfer(to common.Address, value *big.Int) {
+	//to := common.HexToAddress("0x56a4683218dcf19d5b62b667c4348e2ac06d174b")
+	// Value
+  // value := big.NewInt(1000000000000000000) // 1 ether
+	fmt.Printf("%s v%s\n", apiconfig.GetString("app.name"), apiconfig.GetString("app.version"))
+
+  endPoint := apiconfig.GetString("blockchain.rawurl")
+	log.Println("endPoint: ", endPoint)
   client, err := ethclient.Dial(endPoint)
   if err != nil {
-      log.Fatal(err)
+			log.Fatalf("Dial error: %s", err)
   }
-	log.Println("Connected to: ", config.Config.Blockchain.Rawurl)
-  keystoreFile := config.Config.Account.Keystore
-  password := config.Config.Account.Passphrase
-
+	log.Println("Connected to: ", apiconfig.GetString("blockchain.rawurl"))
+  keystoreFile := apiconfig.GetString("account.keystore")
+  password := apiconfig.GetString("account.passphrase")
 
   keyjson, err := ioutil.ReadFile(keystoreFile)
   if err != nil {
-      log.Fatal(err)
+      log.Fatalf("Keystore error: %s", err)
   }
 
   key, err := keystore.DecryptKey(keyjson, password)
@@ -68,11 +74,9 @@ func main() {
 	log.Println("Gas price: ", gasPrice)
 
   // Figure out the gas limit
-  from := common.HexToAddress(config.Config.Account.Address)
-  to := common.HexToAddress("0x56a4683218dcf19d5b62b667c4348e2ac06d174b")
-  value := big.NewInt(1000000000000000000) // 1 ether
+  from := common.HexToAddress(apiconfig.GetString("account.address"))
 
-  input := []byte(config.Config.Account.Passphrase)
+  input := []byte(apiconfig.GetString("account.passphrase"))
   msg := ethereum.CallMsg{From: from, To: &to, Value: value, Data: input}
   gasLimit, err := client.EstimateGas(ctx, msg)
   if err != nil {
@@ -80,12 +84,9 @@ func main() {
   }
 	log.Println("Gas limit: ", gasLimit)
 
-
   // Get nonce
-  nonce, err := client.PendingNonceAt(ctx, from)
-  if err != nil {
-    log.Fatal(err)
-  }
+	nonce :=  tools.GetNewNonce(from).Number
+	log.Println("Nonce: ", nonce)
 
   // Create the transaction
 	tx := types.NewTransaction(nonce, to, value, gasLimit, gasPrice, input)
@@ -93,7 +94,7 @@ func main() {
   // Sign
   transact_opt := bind.NewKeyedTransactor(key.PrivateKey)
   //log.Printf("transact_opt: %T", transact_opt)
-  tx, err = transact_opt.Signer(types.HomesteadSigner{}, common.HexToAddress(config.Config.Account.Address), tx)
+  tx, err = transact_opt.Signer(types.HomesteadSigner{}, common.HexToAddress(apiconfig.GetString("account.address")), tx)
   if err != nil {
       log.Fatal(err)
   }

@@ -1,39 +1,23 @@
-// Copyright 2017 Charonne https://charonne.com
-// This file is part of the goethapi library.
-//
-// The goethapi library is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// The gethitihteg library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License
-// along with the gethitihteg library. If not, see <http://www.gnu.org/licenses/>.
-
-package main
+package node
 
 import(
-    "fmt"
-    "log"
-    "context"
-    "github.com/fatih/color"
+  "fmt"
+  "log"
+  "context"
+  "github.com/fatih/color"
 
-    "github.com/ethereum/go-ethereum/ethclient"
-    "github.com/ethereum/go-ethereum/accounts/keystore"
-    "github.com/ethereum/go-ethereum/crypto"
+  "github.com/ethereum/go-ethereum/ethclient"
+  "github.com/ethereum/go-ethereum/accounts/keystore"
+  "github.com/ethereum/go-ethereum/crypto"
 
-    "github.com/charonne/goethapi/config"
-    "github.com/charonne/goethapi/converter"
+  "github.com/charonne/goethapi/config"
+  "github.com/charonne/goethapi/converter"
 )
 
 func getClient() (client *ethclient.Client, err error) {
-    log.Println("Connect to: " + config.Config.Blockchain.Rawurl)
-    client, err = ethclient.Dial(config.Config.Blockchain.Rawurl)
-    return
+  log.Println("Connect to: " + config.Config.Blockchain.Rawurl)
+  client, err = ethclient.Dial(config.Config.Blockchain.Rawurl)
+  return
 }
 
 // Get gas price
@@ -113,30 +97,4 @@ func getPrivateKey() {
   publicKey := &key.PrivateKey.PublicKey
   fmt.Printf("Public key %x", crypto.PubkeyToAddress(*publicKey))
   */
-}
-
-func main() {
-  line := "---------------------------------------------------------------"
-  color.Green("%s v%s", config.Config.App.Name, config.Config.App.Version)
-  fmt.Println(line)
-
-  // Get block info
-  getBlockInfo()
-  fmt.Println(line)
-
-  // Get gas price
-  getGasPrice()
-  fmt.Println(line)
-
-  // Get account list
-  getAccounts()
-  fmt.Println(line)
-
-  // Get private key
-  getPrivateKey()
-  fmt.Println(line)
-
-  fmt.Println()
-
-
 }

@@ -1,0 +1,299 @@
+swagger: "2.0"
+consumes:
+- application/json
+info:
+  title: FidEver API
+  description: The FidEver swagger API
+  version: 1.0.0
+
+produces:
+- application/json
+schemes:
+- http
+# - https
+securityDefinitions:
+  Bearer:
+    type: apiKey
+    name: Authorization
+    in: header
+paths:
+  # Contract source
+  /contracts/sources:
+    get:
+      summary: Get contract sources list
+      operationId: getContractSources
+      parameters:
+        - name: limit
+          type: integer
+          in: query
+          default: 20
+          description: limit the number of results
+      responses:
+        200:
+          description: list the contract sources
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/ContractSource"
+        default:
+          description: contracts list error response
+          schema:
+            $ref: "#/definitions/Error"
+    post:
+      summary: Add one contract source
+      operationId: addContractSource
+      parameters:
+        - in: body
+          name: contract
+          description: create contract object
+          schema:
+            type: object
+            # required:
+            #   - name
+            #   - source
+            properties:
+              name:
+                type: string
+              source:
+                type: string
+      responses:
+        200:
+          description: create a contract source
+          schema:
+            $ref: "#/definitions/ContractSource"
+        201:
+          description: Created
+        default:
+          description: create a contract error response
+          schema:
+            $ref: "#/definitions/Error"
+  /contracts/sources/{idkey}:
+    get:
+      summary: Get a contract source
+      operationId: getContract
+      parameters:
+        - name: idkey
+          type: string
+          in: path
+          required: true
+      responses:
+        200:
+          description: get a contract source
+          schema:
+            $ref: "#/definitions/ContractSource"
+        default:
+          description: contracts list error response
+          schema:
+            $ref: "#/definitions/Error"
+  /contracts/sources/deploy:
+    post:
+      summary: Deploy a contract source
+      operationId: deployContractSource
+      parameters:
+        - in: body
+          name: contract
+          description: deploy contract source object
+          schema:
+            type: object
+            properties:
+              idkey:
+                type: string
+      responses:
+        200:
+          description: deploy a contract source
+          schema:
+            $ref: "#/definitions/ContractSource"
+        201:
+          description: Created
+        default:
+          description: create a contract error response
+          schema:
+            $ref: "#/definitions/Error"
+
+  # Contract
+  /contracts:
+    get:
+      summary: Get contracts list
+      operationId: getContracts
+      parameters:
+        - name: limit
+          type: integer
+          in: query
+          default: 20
+          description: limit the number of results
+      responses:
+        200:
+          description: list the contracts
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Contract"
+        default:
+          description: contracts list error response
+          schema:
+            $ref: "#/definitions/Error"
+  /contracts/{address}:
+    get:
+      summary: Get a contract
+      operationId: getContract
+      parameters:
+        - name: address
+          type: string
+          in: path
+          required: true
+      responses:
+        200:
+          description: get a contract
+          schema:
+            $ref: "#/definitions/Contract"
+        default:
+          description: contracts list error response
+          schema:
+            $ref: "#/definitions/Error"
+
+  /contracts/exec:
+    post:
+      summary: Exec a contract
+      operationId: execContract
+      parameters:
+        - in: body
+          name: contract
+          description: deploy contract object
+          schema:
+            type: object
+            properties:
+              idkey:
+                type: string
+              method:
+                type: string
+              params:
+                type: array
+                items:
+                  type: string
+      responses:
+        200:
+          description: exec a contract
+          schema:
+            $ref: "#/definitions/Contract"
+        201:
+          description: Created
+        default:
+          description: create a contract error response
+          schema:
+            $ref: "#/definitions/Error"
+
+
+
+  /transactions:
+    get:
+      summary: Get transactions list
+      operationId: getTransactions
+      # security:
+        # - Bearer: []
+      parameters:
+        - name: since
+          in: query
+          type: integer
+          format: int64
+        - name: limit
+          in: query
+          type: integer
+          format: int32
+          default: 20
+      responses:
+        200:
+          description: list the transactions
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Transaction"
+        default:
+          description: transactions list error response
+          schema:
+            $ref: "#/definitions/Error"
+  /transactions/{txhash}:
+    parameters:
+      - name: txhash
+        type: integer
+        format: int64
+        in: path
+        required: true
+    get:
+      summary: Get transactions by txhash
+      operationId: getOneTransaction
+      parameters:
+        - name: body
+          in: body
+          schema:
+            $ref: "#/definitions/Transaction"
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/Transaction"
+        default:
+          description: error
+          schema:
+            $ref: "#/definitions/Error"
+
+definitions:
+  ContractSource:
+    type: object
+    required:
+      - name
+      - source
+    properties:
+      id:
+        type: integer
+        format: int64
+        readOnly: true
+      idkey:
+        type: string
+        minLength: 1
+      name:
+        type: string
+        minLength: 1
+      source:
+        type: string
+        minLength: 1
+      bytecode:
+        type: string
+        minLength: 1
+      interface:
+        type: string
+        minLength: 1
+  Contract:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+        readOnly: true
+      address:
+        type: string
+      txhash:
+        type: string
+  Transaction:
+    type: object
+    required:
+      - txhash
+    properties:
+      id:
+        type: integer
+        format: int64
+        readOnly: true
+      txhash:
+        type: string
+        minLength: 1
+      confirmed:
+        type: boolean
+  Error:
+    type: object
+    required:
+      - message
+    properties:
+      code:
+        type: integer
+        format: int64
+      message:
+        type: string
