@@ -6,7 +6,7 @@ import (
   "github.com/jinzhu/gorm"
   _ "github.com/jinzhu/gorm/dialects/postgres"
 
-  "github.com/charonne/fidever-api/config"
+  "github.com/charonne/goethapi/config"
 )
 
 var apiconfig = config.Config()
