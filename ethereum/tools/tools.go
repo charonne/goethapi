@@ -7,9 +7,9 @@ import (
 )
 
 /**
- Check Ethereum address
+ Check Ethereum address validity
  */
-func CheckAddress(address string) bool {
+func IsValidAddress(address string) bool {
     matched, err := regexp.MatchString("^0x[a-fA-F0-9]{40}$", address)
     if err != nil {
       log.Printf("Failed to match address: %v", err)
